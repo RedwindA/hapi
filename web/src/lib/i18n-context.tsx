@@ -23,11 +23,16 @@ function interpolate(str: string, params?: Record<string, string | number>): str
   })
 }
 
+function detectLocale(): Locale {
+  const saved = localStorage.getItem('hapi-lang')
+  if (saved === 'en' || saved === 'zh-CN') return saved
+  const lang = navigator.language
+  if (lang.startsWith('zh')) return 'zh-CN'
+  return 'en'
+}
+
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(() => {
-    const saved = localStorage.getItem('hapi-lang')
-    return (saved === 'en' || saved === 'zh-CN') ? saved : 'en'
-  })
+  const [locale, setLocaleState] = useState<Locale>(detectLocale)
 
   const setLocale = useCallback((newLocale: Locale) => {
     setLocaleState(newLocale)
